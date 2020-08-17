@@ -7,6 +7,13 @@ class Connection:
     HOST = "localhost"
     PORT = 6379
     DB = 0
+
+    @staticmethod
+    def init_connection(host='localhost', port=6379, db=0):
+        Connection.HOST = host
+        Connection.PORT = port
+        Connection.DB = db
+
     @classmethod
     def get_connection(cls):
         if not Connection.REDIS:
