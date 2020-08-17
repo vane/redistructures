@@ -69,9 +69,15 @@ def test_list():
         print(e)
     print('-'*50)
 
+def test_dict2():
+    d = Struct.dictionary()
+    for k, v in d.items():
+        print(k, v)
+
 if __name__ == '__main__':
     test_dict()
     test_set()
     test_counter()
     test_queue()
     test_list()
+    test_dict2()
