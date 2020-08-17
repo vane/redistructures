@@ -2,7 +2,7 @@ redistructures ?
 ====
 
 ### Description
-Dictionary, Set, Queue, Counter implemented in python with redis under the hood
+Dictionary, List, Set, Queue, Counter implemented in python with redis data store under the hood
 
 ### Examples
 ```python
