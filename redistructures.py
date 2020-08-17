@@ -136,7 +136,6 @@ class Set:
     def __init__(self, connection, key="set"):
         self._conn = connection
         self._key = key
-        self._iter = None
 
     @property
     def key(self):
