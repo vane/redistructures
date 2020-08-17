@@ -47,6 +47,16 @@ class Struct:
     def counter(key="counter"):
         return Counter(connection=Connection.get_connection(), key=key)
 
+    @staticmethod
+    def list_iterator(key="list"):
+        """Return list iterator based on provided key"""
+        return ListIterator(connection=Connection.get_connection(), key=key)
+
+    @staticmethod
+    def list(key="list"):
+        """Return redis list based on provided key"""
+        return List(connection=Connection.get_connection(), key=key)
+
 
 class Queue:
     def __init__(self, connection, key="queue"):
@@ -202,3 +212,61 @@ class Counter:
     def decr(self, padding=0):
         self._count = self._conn.decr(self._key)
         return ("{0:0"+str(padding)+"d}").format(self._count)
+
+class ListIterator:
+    def __init__(self, connection, key):
+        self._key = key
+        self._conn = connection
+        self.index = 0
+        self.end = self._conn.llen(self._key)
+        self.current = None
+
+    def __next__(self):
+        """Iterator next value"""
+        self.index += 1
+        val = self._conn.lindex(self._key, self.index)
+        if val:
+            return val
+        raise StopIteration()
+
+    def next(self):
+        """Iterator next value"""
+        self.index += 1
+        val = self._conn.lindex(self._key, self.index)
+        if val:
+            return val
+        raise StopIteration()
+
+    def __iter__(self):
+        return self
+
+class List:
+    def __init__(self, connection, key='list'):
+        self._conn = connection
+        self._key = key
+
+    def append(self, value):
+        return self._conn.rpush(self._key, value)
+
+    def insert(self, index, value):
+        return slef._conn.lset(self._key, index, value)
+
+    def pop(self, index):
+        return self._conn.lrem(self._key, index)
+
+    def __getitem__(self, index):
+        return self._conn.lindex(self._key, index)
+
+    def __setitem__(self, index, value):
+        return self._conn.lset(self._key, index, value)
+
+    def __contains__(self, item):
+        return self._conn.execute_command('LPOS', self._key, item)
+
+    def __iter__(self):
+        """Return set iterator @see SetIterator"""
+        return ListIterator(connection=self._conn, key=self._key)
+
+    def __len__(self):
+        return self._conn.llen(self._key)
+

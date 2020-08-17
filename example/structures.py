@@ -56,8 +56,22 @@ def test_queue():
         k = q.get(timeout=1)
     print('-'*50)
 
+def test_list():
+    print('-'*10, 'List', '-'*10)
+    l = Struct.list('l1')
+    print(l[0])
+    l.append('x')
+    l.append('y')
+    l.append('z')
+    print('q' in l)
+    print('x' in l)
+    for e in l:
+        print(e)
+    print('-'*50)
+
 if __name__ == '__main__':
     test_dict()
     test_set()
     test_counter()
     test_queue()
+    test_list()
