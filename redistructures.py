@@ -75,6 +75,9 @@ class Queue:
         """Add to redis queue"""
         return self._conn.lpush(self._key, value)
 
+    def __len__(self):
+        return self._conn.llen(self._key)
+
 
 class Dict:
     """Dictionary on top of redis"""
@@ -95,6 +98,9 @@ class Dict:
 
     def __contains__(self, key):
         return self._conn.get(f"{self.key}:{key}")
+
+    def __delitem__(self, key):
+        return self._conn.delete(key)
 
     def keys(self, wildcard="*"):
         return self._conn.scan_iter(f"{self.key}:{wildcard}")
@@ -269,4 +275,3 @@ class List:
 
     def __len__(self):
         return self._conn.llen(self._key)
-
