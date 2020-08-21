@@ -256,7 +256,7 @@ class List:
         return self._conn.rpush(self._key, value)
 
     def insert(self, index, value):
-        return slef._conn.lset(self._key, index, value)
+        return self._conn.lset(self._key, index, value)
 
     def pop(self, index):
         return self._conn.lrem(self._key, index, self[index])
