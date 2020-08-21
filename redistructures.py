@@ -211,6 +211,9 @@ class Counter:
     def __repr__(self):
         return str(self._count)
 
+    def __del__(self):
+        self._conn.delete(self.key)
+
     def incr(self, padding=0):
         self._count = self._conn.incr(self._key)
         return ("{0:0"+str(padding)+"d}").format(self._count)
