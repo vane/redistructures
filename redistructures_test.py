@@ -159,3 +159,98 @@ class RedistructureSetTest(BaseTest):
         s2.add('bar')
         s2.add('far')
         assert s1 + s2 == {b'foo', b'bar', b'far'}
+
+class RedistructureListTest(BaseTest):
+
+    def tearDown(self):
+        l = redistructures.Struct.list(key=self.name)
+        while len(l) > 0:
+            l.pop(0)
+
+    def testAppend(self):
+        l = redistructures.Struct.list(key=self.name)
+        l.append('foo')
+        assert l[0] == b'foo'
+
+    def testInsert(self):
+        l = redistructures.Struct.list(key=self.name)
+        l.append('foo')
+        l.append('foo')
+        l.insert(1, 'bar')
+        assert l[1] == b'bar'
+
+    def testPop(self):
+        l = redistructures.Struct.list(key=self.name)
+        l.append('foo')
+        l.append('foo')
+        l.append('bar')
+        l.pop(1)
+        assert l[1] == b'bar'
+
+    def testGetItem(self):
+        l = redistructures.Struct.list(key=self.name)
+        l.append('foo')
+        assert l[0] == b'foo'
+
+    def testSetItem(self):
+        l = redistructures.Struct.list(key=self.name)
+        l.append('foo')
+        l.append('foo')
+        l[1] = 'bar'
+        assert l[1] == b'bar'
+
+    def testContains(self):
+        l = redistructures.Struct.list(key=self.name)
+        l.append('foo')
+        l.append('foo')
+        assert 'bar' not in l
+        l.append('bar')
+        assert 'bar' in l
+
+    def testLen(self):
+        l = redistructures.Struct.list(key=self.name)
+        l.append('foo')
+        l.append('foo')
+        assert len(l) == 2
+
+    def testIter(self):
+        l = redistructures.Struct.list(key=self.name)
+        l.append('foo')
+        l.append('foo')
+        assert list(l) == [b'foo', b'foo']
+
+class RedistructureCounterTest(BaseTest):
+
+    def tearDown(self):
+        c = redistructures.Struct.counter(key=self.name)
+        del c
+
+    def testValue(self):
+        c = redistructures.Struct.counter(key=self.name)
+        assert c.value() == '0'
+
+    def testIncr(self):
+        c = redistructures.Struct.counter(key=self.name)
+        assert c.incr() == '1'
+
+    def testDecr(self):
+        c = redistructures.Struct.counter(key=self.name)
+        assert c.decr() == '-1'
+
+    def testIncrPadding(self):
+        c = redistructures.Struct.counter(key=self.name)
+        assert c.incr(5) == '00001'
+
+    def testDecrPadding(self):
+        c = redistructures.Struct.counter(key=self.name)
+        c.incr()
+        c.incr()
+        assert c.decr(5) == '00001'
+
+    def testRemove(self):
+        c = redistructures.Struct.counter(key=self.name)
+        c.incr()
+        c.incr()
+        del c
+        c = redistructures.Struct.counter(key=self.name)
+        assert c.incr() == '1'
