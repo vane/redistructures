@@ -88,6 +88,7 @@ class Dict:
     def exists(self, key):
         if self._conn.exists(f"{self.key}:{key}"):
             return True
+        return False
 
     def __setitem__(self, key, value):
         self._conn.set(f"{self.key}:{key}", value)
@@ -124,7 +125,7 @@ class Dict:
 
     def getcheck(self, key):
         if self.exists(key):
-            return self.get(f"{self.key}:{key}")
+            return self.get(key)
         return False
 
 
