@@ -259,7 +259,7 @@ class List:
         return slef._conn.lset(self._key, index, value)
 
     def pop(self, index):
-        return self._conn.lrem(self._key, index)
+        return self._conn.lrem(self._key, index, self[index])
 
     def __getitem__(self, index):
         return self._conn.lindex(self._key, index)
