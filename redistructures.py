@@ -197,10 +197,9 @@ class Counter:
     def __init__(self, connection, key="counter"):
         self._conn = connection
         self._key = key
-        if self._conn.exists(key):
-            self._count = int(self._conn.get(key))
-        else:
-            self._count = int(self._conn.set(key, 0))
+        if not self._conn.exists(key):
+            self._conn.set(key, 0)
+        self._count = int(self._conn.get(key))
 
     @property
     def key(self):
