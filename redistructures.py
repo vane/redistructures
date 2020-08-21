@@ -100,7 +100,7 @@ class Dict:
         return self._conn.get(f"{self.key}:{key}")
 
     def __delitem__(self, key):
-        return self._conn.delete(key)
+        return self._conn.delete(f"{self.key}:{key}")
 
     def keys(self, wildcard="*"):
         return self._conn.scan_iter(f"{self.key}:{wildcard}")
