@@ -230,16 +230,16 @@ class ListIterator:
 
     def __next__(self):
         """Iterator next value"""
-        self.index += 1
         val = self._conn.lindex(self._key, self.index)
+        self.index += 1
         if val:
             return val
         raise StopIteration()
 
     def next(self):
         """Iterator next value"""
-        self.index += 1
         val = self._conn.lindex(self._key, self.index)
+        self.index += 1
         if val:
             return val
         raise StopIteration()
