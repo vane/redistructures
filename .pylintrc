@@ -1,0 +1,4 @@
+[MESSAGES CONTROL]
+# W0622 - Redefining built-in 'type'
+# R0201 = Method could be a function
+disable=W0622,R0201
