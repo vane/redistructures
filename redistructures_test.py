@@ -10,6 +10,11 @@ class BaseTest(unittest.TestCase):
             value = value.decode('utf-8')
         return value
 
+    def str_to_byte(self, value):
+        if not isinstance(value, bytes):
+            value = value.encode('utf-8')
+        return value
+
 class RedistructureQueueTest(BaseTest):
     def setUp(self):
         """Set up queue name"""
@@ -46,9 +51,56 @@ class RedistructureDictTest(BaseTest):
         for key in d.keys():
             del d[key]
 
-    def testSetItem(self):
-        key = 'foo'
-        value = 'bar'
+    def createKey(self, key, value):
         d = redistructures.Struct.dictionary(key=self.name)
         d[key] = value
-        assert self.byte_to_str(d[key]) == value
+        return d
+
+    def testSetItem(self):
+        d = self.createKey('foo', 'bar')
+        assert self.byte_to_str(d['foo']) == 'bar'
+
+    def testExists(self):
+        d = self.createKey('foo', 'bar')
+        assert d.exists('foo')
+
+    def testContains(self):
+        d = self.createKey('foo', 'bar')
+        assert ('foo' in d) == True
+
+    def testDelete(self):
+        d = self.createKey('foo', 'bar')
+        del d['foo']
+        assert d.get('foo') == None
+
+    def testKeys(self):
+        d = self.createKey('foo', 'bar')
+        d.set('bar', 'foo')
+        k = list(d.keys())
+        foo_key = self.str_to_byte(f'{d.key}:foo')
+        bar_key = self.str_to_byte(f'{d.key}:bar')
+        assert foo_key in k
+        assert bar_key in k
+
+    def testValues(self):
+        d = self.createKey('foo', 'bar')
+        d.set('bar', 'foo')
+        v = list(d.values())
+        assert b'foo' in v
+        assert b'bar' in v
+
+    def testItems(self):
+        d = self.createKey('foo', 'bar')
+        d.set('bar', 'foo')
+        foo_key = self.str_to_byte(f'{d.key}:foo')
+        foo_kv = (foo_key, b'bar')
+        bar_key = self.str_to_byte(f'{d.key}:bar')
+        bar_kv = (bar_key, b'foo')
+        kv = list(d.items())
+        assert foo_kv in kv
+        assert bar_kv in kv
+
+    def testGetCheck(self):
+        d = self.createKey('foo', 'bar')
+        assert d.getcheck('bar') == False
+        assert d.getcheck('foo') == b'bar'
